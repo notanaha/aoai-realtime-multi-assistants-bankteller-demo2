@@ -61,12 +61,8 @@ var inferredAllowedAudiences = aadClientId == '' ? [] : [
 
 var allowedAudiences = length(aadAllowedAudiences) > 0 ? aadAllowedAudiences : inferredAllowedAudiences
 
-var isTenantGuid = length(aadTenantId) == 36 && contains(aadTenantId, '-')
-
-// Only apply domain_hint when a domain-form tenant identifier is supplied
-var loginParameters = (!isTenantGuid && aadTenantId != '' && contains(aadTenantId, '.')) ? [
-  'domain_hint=${aadTenantId}'
-] : []
+// Domain hint intentionally omitted to avoid relying on tenant ID format heuristics
+var loginParameters = []
 
 // App Service Plan
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
