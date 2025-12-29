@@ -10,6 +10,52 @@ param appCommandLine string = ''
 @secure()
 param environmentVariables object = {}
 
+@description('Enable Entra ID authentication (App Service Authentication)')
+param enableAadAuth bool = false
+
+@description('Tenant ID or domain to enforce sign-in (for Microsoft employees use fdpo.microsoft.com)')
+param aadTenantId string = ''
+
+@description('Application (client) ID for Entra ID authentication')
+param aadClientId string = ''
+
+@secure()
+@description('Client secret for the Entra ID application registration')
+param aadClientSecret string = ''
+
+@description('Optional list of allowed audiences for token validation')
+param aadAllowedAudiences array = []
+
+var baseAppSettings = [for key in objectKeys(environmentVariables): {
+  name: key
+  value: environmentVariables[key]
+}]
+
+var authSecretSettings = aadClientSecret == '' ? [] : [
+  {
+    name: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+    value: aadClientSecret
+  }
+]
+
+var mergedAppSettings = concat(baseAppSettings, authSecretSettings)
+
+var aadIssuer = aadTenantId == '' ? 'https://login.microsoftonline.com/${tenant().tenantId}/v2.0' : 'https://login.microsoftonline.com/${aadTenantId}/v2.0'
+
+var aadRegistration = aadClientSecret == '' ? {
+  clientId: aadClientId
+  openIdIssuer: aadIssuer
+} : union({
+  clientId: aadClientId
+  openIdIssuer: aadIssuer
+}, {
+  clientSecretSettingName: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+})
+
+var allowedAudiences = length(aadAllowedAudiences) > 0 ? aadAllowedAudiences : (aadClientId == '' ? [] : [
+  aadClientId
+])
+
 // App Service Plan
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
@@ -39,10 +85,36 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
       alwaysOn: true
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
-      appSettings: [for key in objectKeys(environmentVariables): {
-        name: key
-        value: environmentVariables[key]
-      }]
+      appSettings: mergedAppSettings
+    }
+    authSettingsV2: if (enableAadAuth) {
+      platform: {
+        enabled: true
+        runtimeVersion: '~1'
+      }
+      globalValidation: {
+        requireAuthentication: true
+        unauthenticatedClientAction: 'RedirectToLoginPage'
+      }
+      identityProviders: {
+        azureActiveDirectory: {
+          enabled: true
+          login: {
+            loginParameters: [
+              'domain_hint=${aadTenantId == '' ? tenant().tenantId : aadTenantId}'
+            ]
+          }
+          registration: aadRegistration
+          validation: {
+            allowedAudiences: allowedAudiences
+          }
+        }
+      }
+      login: {
+        tokenStore: {
+          enabled: true
+        }
+      }
     }
   }
 }
