@@ -56,6 +56,10 @@ var allowedAudiences = length(aadAllowedAudiences) > 0 ? aadAllowedAudiences : (
   aadClientId
 ])
 
+var loginParameters = aadTenantId == '' ? [] : [
+  'domain_hint=${aadTenantId}'
+]
+
 // App Service Plan
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
@@ -100,9 +104,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         azureActiveDirectory: {
           enabled: true
           login: {
-            loginParameters: [
-              'domain_hint=${aadTenantId == '' ? tenant().tenantId : aadTenantId}'
-            ]
+            loginParameters: loginParameters
           }
           registration: aadRegistration
           validation: {
