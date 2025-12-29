@@ -26,12 +26,14 @@ param aadClientSecret string = ''
 @description('Optional list of allowed audiences for token validation')
 param aadAllowedAudiences array = []
 
+var aadAuthEnabled = enableAadAuth && aadClientId != ''
+
 var baseAppSettings = [for key in objectKeys(environmentVariables): {
   name: key
   value: environmentVariables[key]
 }]
 
-var authSecretSettings = aadClientSecret == '' ? [] : [
+var authSecretSettings = (!aadAuthEnabled || aadClientSecret == '') ? [] : [
   {
     name: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
     value: aadClientSecret
@@ -95,7 +97,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
       minTlsVersion: '1.2'
       appSettings: mergedAppSettings
     }
-    authSettingsV2: if (enableAadAuth) {
+    authSettingsV2: aadAuthEnabled ? {
       platform: {
         enabled: true
         runtimeVersion: '~1'
@@ -120,6 +122,10 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         tokenStore: {
           enabled: true
         }
+      }
+    } : {
+      platform: {
+        enabled: false
       }
     }
   }
