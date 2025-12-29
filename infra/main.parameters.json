@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "location": {
+      "value": "${AZURE_LOCATION}"
+    },
+    "principalId": {
+      "value": "${AZURE_PRINCIPAL_ID}"
+    },
+    "aoaiEndpoint": {
+      "value": "${VITE_AOAI_ENDPOINT}"
+    },
+    "aoaiApiKey": {
+      "value": "${VITE_AOAI_API_KEY}"
+    },
+    "aoaiDeployment": {
+      "value": "${VITE_AOAI_DEPLOYMENT}"
+    },
+    "bingApiKey": {
+      "value": "${VITE_BING_API_KEY}"
+    }
+  }
+}

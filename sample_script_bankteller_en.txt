@@ -1,0 +1,44 @@
+**[Bank Teller 00:03]**
+Welcome. My name is Yamada, and I'll be assisting you today.
+
+**[Customer 00:08]**
+Thank you. I got married and moved last month, so I'm here to update my information.
+
+**[Bank Teller 00:17]**
+Congratulations. So, it's an address change. Have you also changed your phone number? And with your marriage, will there be a change in the account holder's name as well?
+
+**[Customer 00:29]**
+I believe my mobile number is registered, and that hasn't changed. But I'd like to update the name on the account.
+
+**[Bank Teller 00:36]**
+Understood. Since the name will be changed, we will also reissue your cash card. Could you please provide your bank account number?
+
+**[Customer 00:47]**
+Yes. The account number is 231-1555.
+
+**[Bank Teller 00:54]**
+Thank you. Now, please provide your new name and address.
+
+**[Customer 01:03]**
+My new name is Hanako Foundry, and my new address is 1-1-1 Konan, Minato-ku, Tokyo.
+
+**[Bank Teller 01:14]**
+Thank you. For confirmation, please show your ID such as your driver's license or health insurance card with your new name.
+
+**[Customer 01:27]**
+Sure. Here it is.
+
+**[Bank Teller 01:33]**
+Thank you. We've confirmed it using your driver's license. Will there be any changes to the type of card or your PIN?
+
+**[Customer 01:43]**
+No, those will stay the same.
+
+**[Bank Teller 01:50]**
+Understood. Please submit the form for the changes. Review the details, and if everything is correct, please press the confirm button.
+
+**[Customer 02:12]**
+Yes, it's correct. I've pressed it.
+
+**[Bank Teller 02:17]**
+Great. Your request has been successfully submitted. That concludes today's procedures. Please make sure you haven't left anything behind. Thank you very much.

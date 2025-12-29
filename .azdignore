@@ -1,0 +1,7 @@
+# Ignore files not needed for deployment
+.git
+.github
+.devcontainer
+.env
+*.log
+.azure

@@ -1,0 +1,26 @@
+name: aoai-realtime-multi-assistants-bankteller-demo
+metadata:
+  template: aoai-realtime-multi-assistants-bankteller-demo
+hooks:
+  preprovision:
+    posix:
+      shell: sh
+      run: ./infra/hooks/preprovision.sh
+      continueOnError: false
+    windows:
+      shell: pwsh
+      run: ./infra/hooks/preprovision.ps1
+      continueOnError: false
+services:
+  web:
+    project: .
+    language: js
+    host: appservice
+    hooks:
+      prepackage:
+        posix:
+          shell: sh
+          run: npm install && npm run build
+        windows:
+          shell: pwsh
+          run: npm install && npm run build
