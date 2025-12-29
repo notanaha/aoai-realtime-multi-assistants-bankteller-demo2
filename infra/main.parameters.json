@@ -23,6 +23,9 @@
     "aadClientSecret": {
       "value": "${AAD_CLIENT_SECRET}"
     },
+    "aadAllowedAudiences": {
+      "value": []
+    },
     "aoaiEndpoint": {
       "value": "${VITE_AOAI_ENDPOINT}"
     },
