@@ -40,7 +40,9 @@ var authSecretSettings = aadClientSecret == '' ? [] : [
 
 var mergedAppSettings = concat(baseAppSettings, authSecretSettings)
 
-var aadIssuer = aadTenantId == '' ? 'https://login.microsoftonline.com/${tenant().tenantId}/v2.0' : 'https://login.microsoftonline.com/${aadTenantId}/v2.0'
+var aadTenantSegment = aadTenantId == '' ? tenant().tenantId : aadTenantId
+
+var aadIssuer = 'https://login.microsoftonline.com/${aadTenantSegment}/v2.0'
 
 var aadRegistration = aadClientSecret == '' ? {
   clientId: aadClientId
@@ -56,9 +58,9 @@ var allowedAudiences = length(aadAllowedAudiences) > 0 ? aadAllowedAudiences : (
   aadClientId
 ])
 
-var loginParameters = aadTenantId == '' ? [] : [
+var loginParameters = (aadTenantId != '' && contains(aadTenantId, '.')) ? [
   'domain_hint=${aadTenantId}'
-]
+] : []
 
 // App Service Plan
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
