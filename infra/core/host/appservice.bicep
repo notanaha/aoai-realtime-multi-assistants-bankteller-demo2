@@ -33,12 +33,12 @@ var baseAppSettings = [for key in objectKeys(environmentVariables): {
   value: environmentVariables[key]
 }]
 
-var authSecretSettings = (!aadAuthEnabled || aadClientSecret == '') ? [] : [
+var authSecretSettings = (aadAuthEnabled && aadClientSecret != '') ? [
   {
     name: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
     value: aadClientSecret
   }
-]
+] : []
 
 var mergedAppSettings = concat(baseAppSettings, authSecretSettings)
 
@@ -51,9 +51,9 @@ var baseAadRegistration = {
   openIdIssuer: aadIssuer
 }
 
-var aadRegistration = aadClientSecret == '' ? baseAadRegistration : union(baseAadRegistration, {
+var aadRegistration = (aadAuthEnabled && aadClientSecret != '') ? union(baseAadRegistration, {
   clientSecretSettingName: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
-})
+}) : baseAadRegistration
 
 var inferredAllowedAudiences = aadClientId == '' ? [] : [
   aadClientId
@@ -61,8 +61,10 @@ var inferredAllowedAudiences = aadClientId == '' ? [] : [
 
 var allowedAudiences = length(aadAllowedAudiences) > 0 ? aadAllowedAudiences : inferredAllowedAudiences
 
+var isTenantGuid = length(aadTenantId) == 36 && contains(aadTenantId, '-')
+
 // Only apply domain_hint when a domain-form tenant identifier is supplied
-var loginParameters = (aadTenantId != '' && contains(aadTenantId, '.')) ? [
+var loginParameters = (!isTenantGuid && aadTenantId != '' && contains(aadTenantId, '.')) ? [
   'domain_hint=${aadTenantId}'
 ] : []
 
