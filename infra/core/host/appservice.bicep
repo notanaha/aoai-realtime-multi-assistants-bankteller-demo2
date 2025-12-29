@@ -44,20 +44,22 @@ var aadTenantSegment = aadTenantId == '' ? tenant().tenantId : aadTenantId
 
 var aadIssuer = 'https://login.microsoftonline.com/${aadTenantSegment}/v2.0'
 
-var aadRegistration = aadClientSecret == '' ? {
+var baseAadRegistration = {
   clientId: aadClientId
   openIdIssuer: aadIssuer
-} : union({
-  clientId: aadClientId
-  openIdIssuer: aadIssuer
-}, {
+}
+
+var aadRegistration = aadClientSecret == '' ? baseAadRegistration : union(baseAadRegistration, {
   clientSecretSettingName: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
 })
 
-var allowedAudiences = length(aadAllowedAudiences) > 0 ? aadAllowedAudiences : (aadClientId == '' ? [] : [
+var inferredAllowedAudiences = aadClientId == '' ? [] : [
   aadClientId
-])
+]
 
+var allowedAudiences = length(aadAllowedAudiences) > 0 ? aadAllowedAudiences : inferredAllowedAudiences
+
+// Only apply domain_hint when a domain-form tenant identifier is supplied
 var loginParameters = (aadTenantId != '' && contains(aadTenantId, '.')) ? [
   'domain_hint=${aadTenantId}'
 ] : []
