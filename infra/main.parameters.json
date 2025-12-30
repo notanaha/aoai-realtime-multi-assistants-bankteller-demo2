@@ -11,6 +11,21 @@
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
     },
+    "enableAadAuth": {
+      "value": "${ENABLE_AAD_AUTH}"
+    },
+    "aadTenantId": {
+      "value": "${AAD_TENANT_ID}"
+    },
+    "aadClientId": {
+      "value": "${AAD_CLIENT_ID}"
+    },
+    "aadClientSecret": {
+      "value": "${AAD_CLIENT_SECRET}"
+    },
+    "aadAllowedAudiences": {
+      "value": []
+    },
     "aoaiEndpoint": {
       "value": "${VITE_AOAI_ENDPOINT}"
     },

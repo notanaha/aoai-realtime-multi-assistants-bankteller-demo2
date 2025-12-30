@@ -46,6 +46,15 @@ The application is configured to deploy to Azure App Service (Web App) with the 
    
    **Note**: `VITE_BING_API_KEY` is optional and can be left empty if not needed.
 
+3. **(Microsoft employees - FDPO tenant)** Enable Entra ID authentication by setting these additional values before running `azd up`:
+   ```
+   ENABLE_AAD_AUTH=true
+   AAD_TENANT_ID=fdpo.microsoft.com
+   AAD_CLIENT_ID=<app-registration-client-id>
+   AAD_CLIENT_SECRET=<app-registration-client-secret>
+   ```
+   This enforces sign-in with the FDPO tenant when accessing the deployed application.
+
 ## Deployment Steps
 
 ### First-Time Deployment
@@ -236,4 +245,3 @@ The following environment variables are configured in Azure Web App:
 - `VITE_AOAI_API_KEY`: Azure OpenAI API key
 - `VITE_AOAI_DEPLOYMENT`: Model deployment name
 - `VITE_BING_API_KEY`: Bing Search API key (optional)
-

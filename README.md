@@ -70,6 +70,14 @@ This application can be deployed to Azure Web App with a single command using Az
    
    **Note**: `VITE_BING_API_KEY` is optional and can be left empty if not needed.
 
+   **Microsoft employees (FDPO tenant)**: to require Entra ID sign-in on the deployed app, set the following in `.env` before running `azd up`:
+   ```
+   ENABLE_AAD_AUTH=true
+   AAD_TENANT_ID=fdpo.microsoft.com
+   AAD_CLIENT_ID=<app-registration-client-id>
+   AAD_CLIENT_SECRET=<app-registration-client-secret>
+   ```
+
 ### Deploy to Azure
 1. Navigate to this folder
 1. Run the following command to provision and deploy:
@@ -187,5 +195,4 @@ The below example is the `get weather` function, that always returns the weather
     returns: async (arg: string) => `the weather of ${JSON.parse(arg).location} is 40F and rainy`
 }
 ```
-
 

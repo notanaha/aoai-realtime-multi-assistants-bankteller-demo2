@@ -12,6 +12,22 @@ param location string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
+@description('Enable Entra ID authentication for the web app')
+param enableAadAuth bool = false
+
+@description('Entra ID tenant ID or domain (use fdpo.microsoft.com for Microsoft employees)')
+param aadTenantId string = ''
+
+@description('Client ID of the Entra ID application configured for authentication')
+param aadClientId string = ''
+
+@secure()
+@description('Client secret for the Entra ID application registration')
+param aadClientSecret string = ''
+
+@description('Optional list of allowed audiences for token validation')
+param aadAllowedAudiences array = []
+
 // Tags that should be applied to all resources.
 var tags = {
   'azd-env-name': environmentName
@@ -38,6 +54,11 @@ module web './core/host/appservice.bicep' = {
     runtimeVersion: '20-lts'
     // Start command assumes dist/ folder exists from prepackage build
     appCommandLine: 'node server.js'
+    enableAadAuth: enableAadAuth
+    aadTenantId: aadTenantId
+    aadClientId: aadClientId
+    aadClientSecret: aadClientSecret
+    aadAllowedAudiences: aadAllowedAudiences
     environmentVariables: {
       VITE_AOAI_ENDPOINT: aoaiEndpoint
       VITE_AOAI_API_KEY: aoaiApiKey
