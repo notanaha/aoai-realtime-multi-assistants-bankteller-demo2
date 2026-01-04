@@ -11,6 +11,14 @@ if (-not (Test-Path $EnvFile)) {
 
 Write-Host "Loading environment variables from $EnvFile..."
 
+# Mapping from .env variable names to Bicep parameter names (camelCase)
+$parameterMapping = @{
+    "ENABLE_AAD_AUTH" = "enableAadAuth"
+    "AAD_TENANT_ID" = "aadTenantId"
+    "AAD_CLIENT_ID" = "aadClientId"
+    "AAD_CLIENT_SECRET" = "aadClientSecret"
+}
+
 # Read .env file and set azd environment variables
 Get-Content $EnvFile | ForEach-Object {
     $line = $_.Trim()
@@ -36,11 +44,14 @@ Get-Content $EnvFile | ForEach-Object {
             $value = $value.Substring(1, $value.Length - 2)
         }
 
+        # Map to Bicep parameter name if mapping exists
+        $bicepKey = if ($parameterMapping.ContainsKey($key)) { $parameterMapping[$key] } else { $key }
+
         # Set the environment variable in azd
         # VITE_BING_API_KEY is optional, so we allow empty values
         if (-not [string]::IsNullOrWhiteSpace($value) -or $key -eq "VITE_BING_API_KEY") {
-            Write-Host "Setting $key..."
-            azd env set $key $value
+            Write-Host "Setting $bicepKey..."
+            azd env set $bicepKey $value
         }
         else {
             Write-Host "Warning: $key is empty and will not be set (except VITE_BING_API_KEY which is optional)"

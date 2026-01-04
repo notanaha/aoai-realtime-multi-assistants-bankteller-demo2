@@ -12,6 +12,18 @@ fi
 
 echo "Loading environment variables from $ENV_FILE..."
 
+# Function to map .env variable names to Bicep parameter names (camelCase)
+map_to_bicep_param() {
+    local key="$1"
+    case "$key" in
+        "ENABLE_AAD_AUTH") echo "enableAadAuth" ;;
+        "AAD_TENANT_ID") echo "aadTenantId" ;;
+        "AAD_CLIENT_ID") echo "aadClientId" ;;
+        "AAD_CLIENT_SECRET") echo "aadClientSecret" ;;
+        *) echo "$key" ;;
+    esac
+}
+
 # Read .env file and set azd environment variables
 # Skip empty lines and comments
 while IFS='=' read -r key value || [ -n "$key" ]; do
@@ -34,11 +46,14 @@ while IFS='=' read -r key value || [ -n "$key" ]; do
         value=${value:1:${#value}-2}
     fi
 
+    # Map to Bicep parameter name
+    bicep_key=$(map_to_bicep_param "$key")
+
     # Set the environment variable in azd
     # VITE_BING_API_KEY is optional, so we allow empty values
     if [[ -n "$value" || "$key" == "VITE_BING_API_KEY" ]]; then
-        echo "Setting $key..."
-        azd env set "$key" "$value"
+        echo "Setting $bicep_key..."
+        azd env set "$bicep_key" "$value"
     else
         echo "Warning: $key is empty and will not be set (except VITE_BING_API_KEY which is optional)"
     fi

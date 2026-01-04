@@ -55,6 +55,20 @@ The application is configured to deploy to Azure App Service (Web App) with the 
    ```
    This enforces sign-in with the FDPO tenant when accessing the deployed application.
 
+   **Important - Configure Redirect URI**: After running `azd up`, you must configure the redirect URI in your Entra ID app registration:
+   
+   1. Go to [Azure Portal → Entra ID → App registrations](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
+   2. Find your app registration (by Client ID)
+   3. Navigate to **Authentication** → **Platform configurations** → **Web**
+   4. Add the redirect URI:
+      ```
+      https://app-<your-env-name>.azurewebsites.net/.auth/login/aad/callback
+      ```
+   5. Under **Implicit grant and hybrid flows**, enable **ID tokens**
+   6. Click **Save**
+   
+   Without this configuration, you will receive HTTP 401 errors when accessing the application.
+
 ## Deployment Steps
 
 ### First-Time Deployment
