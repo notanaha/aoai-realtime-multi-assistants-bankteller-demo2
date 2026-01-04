@@ -13,7 +13,7 @@ param environmentVariables object = {}
 @description('Enable Entra ID authentication (App Service Authentication)')
 param enableAadAuth bool = false
 
-@description('Tenant ID or domain to enforce sign-in (for Microsoft employees use fdpo.microsoft.com)')
+@description('Tenant ID or domain to enforce sign-in')
 param aadTenantId string = ''
 
 @description('Application (client) ID for Entra ID authentication')
@@ -95,36 +95,42 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
       minTlsVersion: '1.2'
       appSettings: mergedAppSettings
     }
-    authSettingsV2: aadAuthEnabled ? {
-      platform: {
+  }
+}
+
+// Auth Settings V2 - configured as a separate child resource
+resource authSettings 'Microsoft.Web/sites/config@2022-03-01' = {
+  parent: appService
+  name: 'authsettingsV2'
+  properties: aadAuthEnabled ? {
+    platform: {
+      enabled: true
+      runtimeVersion: '~1'
+    }
+    globalValidation: {
+      requireAuthentication: true
+      unauthenticatedClientAction: 'RedirectToLoginPage'
+    }
+    identityProviders: {
+      azureActiveDirectory: {
         enabled: true
-        runtimeVersion: '~1'
-      }
-      globalValidation: {
-        requireAuthentication: true
-        unauthenticatedClientAction: 'RedirectToLoginPage'
-      }
-      identityProviders: {
-        azureActiveDirectory: {
-          enabled: true
-          login: {
-            loginParameters: loginParameters
-          }
-          registration: aadRegistration
-          validation: {
-            allowedAudiences: allowedAudiences
-          }
+        login: {
+          loginParameters: loginParameters
+        }
+        registration: aadRegistration
+        validation: {
+          allowedAudiences: allowedAudiences
         }
       }
-      login: {
-        tokenStore: {
-          enabled: true
-        }
+    }
+    login: {
+      tokenStore: {
+        enabled: true
       }
-    } : {
-      platform: {
-        enabled: false
-      }
+    }
+  } : {
+    platform: {
+      enabled: false
     }
   }
 }

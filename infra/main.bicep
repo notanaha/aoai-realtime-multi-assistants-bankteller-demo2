@@ -12,10 +12,13 @@ param location string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
-@description('Enable Entra ID authentication for the web app')
-param enableAadAuth bool = false
+@description('Enable Entra ID authentication for the web app (string: "true" or "false")')
+param enableAadAuth string = 'false'
 
-@description('Entra ID tenant ID or domain (use fdpo.microsoft.com for Microsoft employees)')
+// Convert string parameter to boolean for downstream use
+var enableAadAuthBool = toLower(enableAadAuth) == 'true'
+
+@description('Entra ID tenant ID or domain')
 param aadTenantId string = ''
 
 @description('Client ID of the Entra ID application configured for authentication')
@@ -54,7 +57,7 @@ module web './core/host/appservice.bicep' = {
     runtimeVersion: '20-lts'
     // Start command assumes dist/ folder exists from prepackage build
     appCommandLine: 'node server.js'
-    enableAadAuth: enableAadAuth
+    enableAadAuth: enableAadAuthBool
     aadTenantId: aadTenantId
     aadClientId: aadClientId
     aadClientSecret: aadClientSecret

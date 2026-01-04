@@ -46,18 +46,18 @@ The application is configured to deploy to Azure App Service (Web App) with the 
    
    **Note**: `VITE_BING_API_KEY` is optional and can be left empty if not needed.
 
-3. **(Microsoft employees - FDPO tenant)** Enable Entra ID authentication by setting these additional values before running `azd up`:
+3. Enable Entra ID authentication by setting these additional values before running `azd up`:
    ```
    ENABLE_AAD_AUTH=true
-   AAD_TENANT_ID=fdpo.microsoft.com
+   AAD_TENANT_ID=<tenant-id>
    AAD_CLIENT_ID=<app-registration-client-id>
    AAD_CLIENT_SECRET=<app-registration-client-secret>
    ```
-   This enforces sign-in with the FDPO tenant when accessing the deployed application.
+   This enforces sign-in with your tenant when accessing the deployed application.
 
    **Important - Configure Redirect URI**: After running `azd up`, you must configure the redirect URI in your Entra ID app registration:
    
-   1. Go to [Azure Portal → Entra ID → App registrations](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
+   1. Go to [Azure Portal → Entra ID → App registrations]
    2. Find your app registration (by Client ID)
    3. Navigate to **Authentication** → **Platform configurations** → **Web**
    4. Add the redirect URI:
