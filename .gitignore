@@ -27,3 +27,5 @@ dist-ssr
 
 # Azure Developer CLI
 .azure
+# Backup files
+flow_copy.md

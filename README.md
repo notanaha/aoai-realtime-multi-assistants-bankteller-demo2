@@ -10,6 +10,8 @@
 </h3>
 <br>
 
+![Demo movie](./bankteller_en.gif)
+
 Original README follows.
 # Azure OpenAI /realtime: an interactive chat with multi-assistants
 
